@@ -10,6 +10,23 @@ const Card = (props) => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+
+  function buyBook(id) {
+    const csrf = document
+      .querySelector("meta[name='csrf-token']")
+      .getAttribute("content");
+    fetch("/line_items.json", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrf,
+      },
+      body: JSON.stringify({ product_id: id }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  }
+
   return (
     <div className="w-full sm:self-stretch sm:w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col items-center py-8 px-4">
       <img
@@ -28,7 +45,10 @@ const Card = (props) => {
         {book.title}
       </a>
       <p className="text-xl">R${formattedPrice}</p>
-      <button className="w-full btn cursor-pointer">
+      <button
+        onClick={() => buyBook(book.id)}
+        className="w-full btn cursor-pointer"
+      >
         <FontAwesomeIcon icon={faShoppingBasket} className="text-2xl pr-3" />
         <span className="text-sm">Comprar</span>
       </button>
